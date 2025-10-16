@@ -19,7 +19,9 @@ export class PublisherComponent {
 
   constructor() {
       this.svc.listar().subscribe({
-      next: (data) => { this.editoras.set(data); this.carregando.set(false); },
+      next: (data) => { 
+        this.editoras.set(data); 
+        this.carregando.set(false); },
       error: () => { this.erro.set('Falha ao carregar editoras'); this.carregando.set(false); }
     });
   }

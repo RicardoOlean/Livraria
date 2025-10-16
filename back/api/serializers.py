@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Autor, Editora, Livro
+from .models import Autor, Editora, Livro, Imagem
 
 # === ADICIONE: imports para o cadastro ===
 from django.contrib.auth import get_user_model
@@ -18,10 +18,37 @@ class EditoraSerializer(serializers.ModelSerializer):
 
 
 class LivroSerializer(serializers.ModelSerializer):
+    capa_url = serializers.SerializerMethodField()
+    
     class Meta:
         model = Livro
-        fields = '__all__'
-        
+        fields = [
+            "id",
+            "titulo", 
+            "subtitulo", 
+            "autor", 
+            "editora", 
+            "isbn", 
+            "descricao", 
+            "idioma", 
+            "ano_publicacao", 
+            "paginas", 
+            "preco", 
+            "estoque", 
+            "desconto", 
+            "disponivel", 
+            "dimensoes", 
+            "peso", 
+            "capa",
+            "capa_url" 
+        ]
+    
+    def get_capa_url(self, obj):
+        request = self.context.get("request")
+        if obj.capa and request:
+            return request.build_absolute_uri(obj.capa.url)  
+        return None
+
         
         
 
@@ -47,3 +74,17 @@ class RegisterSerializer(serializers.ModelSerializer):
             username=validated_data['username'],
             password=validated_data['password']
         )
+    
+
+class ImagemSerializer(serializers.ModelSerializer):
+    url = serializers.SerializerMethodField()
+    class Meta:
+        model = Imagem
+        filds = ['id', 'imagem', 'url', 'criado_em']
+        read_only_filds = ['id', 'url', 'criado_em']
+    
+    def get_url(self,obj):
+        request = self.context.get("request")
+        if request:
+            return request.build.absolute_uri(obj.imagem.url)
+        return obj.imagem.url
