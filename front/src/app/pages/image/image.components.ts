@@ -17,13 +17,6 @@ export class ImagensComponent {
   preview: string | null = null;
   apiBase = environment.apiBase
 
-  // constructor() {
-  //   // ajuste se quiser compor url absoluta manualmente
-  //   const base = (window as any).ENV_API_BASE ?? '';
-  //   this.apiBase = base.replace(/\/+$/,'').replace(/\/api$/,'') || 'http://127.0.0.1:8000';
-
-  //   this.carregar();
-  // }
 
   carregar() {
     this.svc.listar().subscribe({

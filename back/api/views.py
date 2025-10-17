@@ -61,46 +61,48 @@ class EditorasDetailView(RetrieveUpdateDestroyAPIView):
     serializer_class = EditoraSerializer
     permission_classes =[IsAuthenticated]
 
-class LivrosView(ModelViewSet):
-    queryset = Livro.objects.all().order_by("-id")
+class LivrosView(ListCreateAPIView):
+    queryset = Livro.objects.all().select_related('autor')
     serializer_class = LivroSerializer
-    parser_classes = [MultiPartParser, FormParser]  # aceita multipart
+    parser_classes = [MultiPartParser, FormParser]  # aceita 
+    ordering = ['titulo']
+    ordering_fields = ['id', 'titulo']
 
-    @action(detail=True, methods=["post"], parser_classes=[MultiPartParser, FormParser])
-    def capa(self, request, pk=None):
-        """POST /api/livros/{id}/capa/ com campo 'capa' (arquivo)"""
-        livro = self.get_object()
-        arquivo = request.FILES.get("capa")
-        if not arquivo:
-            return Response({"detail":"Arquivo 'capa' é obrigatório."},
-                            status=status.HTTP_400_BAD_REQUEST)
-        livro.capa = arquivo
-        livro.save(update_fields=["capa"])
-        return Response(self.get_serializer(livro).data, status=status.HTTP_200_OK)
+#     @action(detail=True, methods=["post"], parser_classes=[MultiPartParser, FormParser])
+#     def capa(self, request, pk=None):
+#         """POST /api/livros/{id}/capa/ com campo 'capa' (arquivo)"""
+#         livro = self.get_object()
+#         arquivo = request.FILES.get("capa")
+#         if not arquivo:
+#             return Response({"detail":"Arquivo 'capa' é obrigatório."},
+#                             status=status.HTTP_400_BAD_REQUEST)
+#         livro.capa = arquivo
+#         livro.save(update_fields=["capa"])
+#         return Response(self.get_serializer(livro).data, status=status.HTTP_200_OK)
 
-class LivrosDetailView(RetrieveUpdateDestroyAPIView):
-    queryset = Livro.objects.all()
-    serializer_class = LivroSerializer
-    permission_classes =[IsAuthenticated]
+# class LivrosDetailView(RetrieveUpdateDestroyAPIView):
+#     queryset = Livro.objects.all()
+#     serializer_class = LivroSerializer
+#     permission_classes =[IsAuthenticated]
 
 
 
-class RegisterView(CreateAPIView):
-    permission_classes = [AllowAny]
-    serializer_class = RegisterSerializer
+# class RegisterView(CreateAPIView):
+#     permission_classes = [AllowAny]
+#     serializer_class = RegisterSerializer
 
-    def post(self, request, *args, **kwargs):
-        ser = self.get_serializer(data=request.data)
-        ser.is_valid(raise_exception=True)
-        user = ser.save()
-        refresh = RefreshToken.for_user(user)
-        return Response({
-            'user': {'id': user.id, 'username': user.username},
-            'tokens': {'refresh': str(refresh), 'access': str(refresh.access_token)}
-        }, status=status.HTTP_201_CREATED)
+#     def post(self, request, *args, **kwargs):
+#         ser = self.get_serializer(data=request.data)
+#         ser.is_valid(raise_exception=True)
+#         user = ser.save()
+#         refresh = RefreshToken.for_user(user)
+#         return Response({
+#             'user': {'id': user.id, 'username': user.username},
+#             'tokens': {'refresh': str(refresh), 'access': str(refresh.access_token)}
+#         }, status=status.HTTP_201_CREATED)
         
 
-class ImagemViewSet(ModelViewSet):
-    queryset = Imagem.objects.all().order_by("criado_em")
-    serializer_class = ImagemSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+# class ImagemViewSet(ModelViewSet):
+#     queryset = Imagem.objects.all().order_by("criado_em")
+#     serializer_class = ImagemSerializer
+#     permission_classes = [IsAuthenticatedOrReadOnly]
