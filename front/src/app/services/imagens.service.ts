@@ -31,6 +31,6 @@ export class ImagemService{
     return this.http.post<Imagem>(this.base, form,{ headers: this.headers()})
     }
     deletar(id: number) {
-        return this.http.delete(`${this.base}${id}/`,{headers:this.headers()})
+        return this.http.delete(`${this.base}${id}`,{headers:this.headers()})
     }
 }
